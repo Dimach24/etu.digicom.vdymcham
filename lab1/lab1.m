@@ -9,11 +9,10 @@ for i=1:length(snrs)
     in=in.setModelParameter('StopTime',num2str(time));
     snr=snrs(i);
     out=sim(in);
-    errorRates(i) = out.errors(1);
-    time=min(time*2,maxtime);
-    if out.errors(2)<100
-        fprintf("For snr %d got %d errors. At least 100 expected.\n",snr,out.errors(2))
-    end
+    errors=out.get('errors');
+    errorRates(i) = errors(1);
+    time=min(time*2.4,maxtime);
+    fprintf("For snr %d got %d errors. At least 100 expected.\n",snr,errors(2))
     fprintf("%3d: %10.6g\n", snr,errorRates(i))
 end
 %%
@@ -22,5 +21,9 @@ xlabel("SNR, dB")
 ylabel("R")
 yscale("log")
 grid on;
-save("lab1.mat","errorRates","snrs")
 saveas(gcf(),"R_SNR","fig")
+xlim([min(snrs)-1,max(snrs)+1])
+
+
+%%
+save("lab1.mat","errorRates","snrs")
