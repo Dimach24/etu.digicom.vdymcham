@@ -2,12 +2,10 @@ clc; clear all ;
 %%
 snrs=-3:7;
 errorRates=zeros(1,length(snrs));
-in = Simulink.SimulationInput("model1_23_2");
-time=175000;
+in = Simulink.SimulationInput("model1");
 allErrors=zeros(length(snrs),3);
 fprintf("snr, dB | bits num | Error Rate | total errors\n")
 for i=1:length(snrs)
-    in=in.setModelParameter('StopTime',num2str(time));
     snr=snrs(i);
     out=sim(in);
     errors=out.get('errors');
@@ -44,12 +42,10 @@ ylim([5e-4,1])
 snrs=-3:9;
 errorRates=zeros(1,length(snrs));
 in = Simulink.SimulationInput("model2");
-time=175000;
 
 allErrors=zeros(length(snrs),3);
 fprintf("snr, dB | bits num | Error Rate | total errors\n")
 for i=1:length(snrs)
-    in=in.setModelParameter('StopTime',num2str(time));
     snr=snrs(i);
     out=sim(in);
     errors=out.get('errors');
