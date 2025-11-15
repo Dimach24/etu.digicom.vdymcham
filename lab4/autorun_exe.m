@@ -1,116 +1,29 @@
-clc; clear all ;
-%%
-snrs=0:2:12;
-model = Simulink.SimulationInput("model_fm2");
-errors=zeros(1,length(snrs));
-for i=1:length(snrs)
-    in=model.setVariable("EbPerNo",snrs(i));
-    out=sim(in);
-    errors(i)= out.Errors(1);
-    if (out.Errors(2)<100)
-        disp("Warning: errors count less then 100",errors)
-    end
-end
-figure
-scatter(snrs,errors,Marker="+");
-yscale(gca(),"log")
-xlabel("Eb/No")
-ylabel("P_{ош}")
-xlim([-1,13])
-grid on
-save("fm2_awgn.mat","errors","snrs")
-clear all;
-%%
-snrs=0:5:30;
-model = Simulink.SimulationInput("model_fm2_siso");
-errors=zeros(1,length(snrs));
-for i=1:length(snrs)
-    in=model.setVariable("EbPerNo",snrs(i));
-    out=sim(in);
-    errors(i)= out.Errors(1);
-    if (out.Errors(2)<100)
-        disp("Warning: errors count less then 100",errors)
-    end
-end
-figure
-scatter(snrs,errors,Marker="+");
-yscale(gca(),"log")
-xlabel("Eb/No")
-ylabel("P_{ош}")
-xlim([-1,31])
-grid on
-save("fm2_awgn_oneRay.mat","errors","snrs")
-clear all;
-%%
-model = Simulink.SimulationInput("model_fm2_siso_visual");
-out=sim(model.setVariable("EbPerNo",20));
-figure
-plot(out.Scope.time,squeeze(out.Scope.signals.values))
-xlabel('t, с')
-ylabel('|x|')
-savefig("scope_1ray.fig")
-close
-figure
-bar(0:.1:4.999,out.Hist,1)
-xlabel('|x|^2')
-ylabel('P(|x|^2)')
-savefig("hist_1ray.fig")
-clear all;
-close
-%%
-model = Simulink.SimulationInput("model_fm2_2siso_visual");
-out=sim(model.setVariable("EbPerNo",20));
-figure
-plot(out.Scope.time,squeeze(out.Scope.signals.values))
-xlabel('t, с')
-ylabel('|x|')
-savefig("scope_2ray.fig")
-close
-figure
-bar(0:.1:4.999,out.Hist,1)
-xlabel('|x|^2')
-ylabel('P(|x|^2)')
-savefig("hist_2ray.fig")
-mean_power=out.MeanPower;
-close
-%%
-model = Simulink.SimulationInput("model_fm2_2siso");
-snrs=0:2:20;
-errors=zeros(1,length(snrs));
-for i=1:length(snrs)
-    out=sim(model.setVariable("EbPerNo",snrs(i)));
-    errors(i)= out.Errors(1);
-    if (out.Errors(2)<100)
-        disp("Warning: errors count less then 100",errors)
-    end
-end
+clc; clear all; close all;
+%% Вводные
 
-figure
-scatter(snrs,errors,Marker="+");
-yscale(gca(),"log")
-xlabel("Eb/No")
-ylabel("P_{ош}")
-xlim([-1,13])
-grid on
-save("fm2_awgn_twoRaysMax.mat","errors","snrs","mean_power")
-clear all;
-%%
-model = Simulink.SimulationInput("model_fm2_2siso_opt");
-snrs=0:2:14;
-errors=zeros(1,length(snrs));
-for i=1:length(snrs)
-    out=sim(model.setVariable("EbPerNo",snrs(i)));
-    errors(i)= out.Errors(1);
-    if (out.Errors(2)<100)
-        disp("Warning: errors count less then 100",errors)
-    end
+% диапазоны варьирования ОСШ
+q_dB = {
+    0:2:12, ... % 4.3.1 АБГШ-канал (AWGN) 
+    0:5:30, ... % 4.3.2 Рэлеевский канал (RAYLEIGH)
+    0:2:20, ... % 4.3.4 Выбор наиболее сильной ветви(SC)
+    0:2:14  ... % 4.3.5 Оптимальное сложение ветвей(MRC)
+};
+
+DO_SIMULATION = true; % {true; false} если true, удалит предыдущие results и выполнит симуляцию заново
+SIMULINK_VER = '2022'; % {'2022', '2025'}
+
+%% Запуск
+
+names = {
+    'АБГШ-канал', ... % 4.3.1 aka AWGN
+    'Рэлеевский канал', ... % 4.3.2 aka RAYLEIGH
+    'Выбор наиболее сильной ветви', ... % 4.3.4 aka SC (Selection Combining)
+    'Оптимальное сложение ветвей' % 4.3.5 aka MRC (Maximum Ratio Combining)
+};
+
+addpath("source\")
+if (DO_SIMULATION)
+    simulation % создаёт данные и строит графики по ним
+else
+    graphs % строит графики по ранее созданным данным
 end
-figure
-scatter(snrs,errors,Marker="+");
-yscale(gca(),"log")
-xlabel("Eb/No")
-ylabel("P_{ош}")
-xlim([-1,13])
-grid on
-save("fm2_awgn_twoRayMRC.mat","errors","snrs")
-clear all;
