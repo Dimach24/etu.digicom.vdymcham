@@ -9,10 +9,7 @@ q_dB = {
     0:2:14  ... % 4.3.5 Оптимальное сложение ветвей(MRC)
 };
 
-DO_SIMULATION = false; % {true; false} если true, удалит предыдущие results и выполнит симуляцию заново
 SIMULINK_VER = '2022'; % {'2022', '2025'}
-
-%% Запуск модели (можно отключить) и построение графиков
 
 names = {
     'АБГШ-канал', ... % 4.3.1 aka AWGN
@@ -20,6 +17,10 @@ names = {
     'Выбор наиболее сильной ветви', ... % 4.3.4 aka SC (Selection Combining)
     'Оптимальное сложение ветвей' % 4.3.5 aka MRC (Maximum Ratio Combining)
 };
+
+colors = orderedcolors("gem");
+
+markers = {"+", "x", "pentagram", "*"};
 
 save_files = {
     "fm2_awgn.mat", ... % 4.3.1 (AWGN)
@@ -37,19 +38,34 @@ for i = 1:length(save_files)
 end
 
 addpath("source\")
-if (DO_SIMULATION)
-    simulation % создаёт данные (удаляет старые)
-end
+%% Запуск симуляции с удалением старых данных
 
+simulation % создаёт данные (удаляет старые)
 addpath("results\")
 
-% строит графики по ранее созданным данным
-for i = 1:4 % п. 1, 2, 4, 5
-    load(save_files{i}(1))
-    graphs.model_graphs(snrs, errors, names{i})
-end 
+%% Построение графиков
 
-for i = 5:6 % п. 3
+close all;
+
+% строит графики по ранее созданным данным
+% п. 1, 2, 4, 5
+figure("Name", "Кривые помехоустойчивости")
+hold on
+for i = 1:4 
     load(save_files{i}(1))
-    graphs.visual_model_graphs(time, data, hist, names{i - 2})
+    graphs.model_graphs(snrs, errors, names{i}, colors(i,:), markers{i})
+end 
+yscale log
+xlabel("E_b/N_0"); ylabel("P_{ош}")
+xlim([min(cell2mat(q_dB)) - 1, max(cell2mat(q_dB)) + 1])
+grid on
+legend(names{1}, '', names{2}, '', names{3}, '', names{4}, '')
+
+% п. 3
+for i = 5:6 
+    load(save_files{i}(1))
+    graphs.visual_model_graphs(time, data, hist, names{i - 3})
+    disp(strcat("Средняя мощность в модели '", names{i - 3}, "', составляет ", num2str(mean_power)))
 end
+%%
+disp("Скрипт завершён")
