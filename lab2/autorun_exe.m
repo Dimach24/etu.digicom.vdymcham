@@ -1,13 +1,14 @@
 clc; close all; clear all;
+postfix = "_2023a";
 
 %%
-[snrs_am,errors_am] =run_model("am",11:21);
+[snrs_am,errors_am] =run_model("am" + postfix, 11:21);
 
 
 %%
-[snrs_pm,errors_pm] =run_model("pm",6:16);
+[snrs_pm,errors_pm] =run_model("pm" + postfix, 6:16);
 %%
-[snrs_qam16,errors_qam16] =run_model("qam_gray",2:12);
+[snrs_qam16,errors_qam16] =run_model("qam_gray" + postfix, 2:12);
 figure
 scatter(snrs_am,errors_am,Marker="+")
 hold on;
@@ -22,7 +23,7 @@ legend( "АМ", "ФМ", "QAM")
 %%
 
 %%
-[snrs_qam_bin,errors_qam_bin] =run_model("qam_bin",2:12);
+[snrs_qam_bin,errors_qam_bin] =run_model("qam_bin" + postfix,2:12);
 figure
 scatter(snrs_qam16,errors_qam16,Marker="+")
 hold on;
@@ -35,8 +36,8 @@ grid on
 legend("Код Грея", "Последоватльный\nподсчёт")
 
 %%
-[snrs_qam64,errors_qam64] =run_model("qam_64",6:16);
-[snrs_qam4,errors_qam4] =run_model("qam_4",-2:8);
+[snrs_qam64,errors_qam64] =run_model("qam_64" + postfix,6:16);
+[snrs_qam4,errors_qam4] =run_model("qam_4" + postfix,-2:8);
 figure
 scatter(snrs_qam4,errors_qam4,Marker="+")
 hold on;

@@ -13,7 +13,7 @@ sigm_a = [1 1 1 1 1 1];
 
 graphsCount = length(E_b_over_N_0(:,1));
 x_axis_title = "Eb / N0, дБ";
-y_axis_title = "Pош, дБ";
+y_axis_title = "Pош";
 graph_titles = ["АМ-16" "ФМ-16" "КАМ-16" "КАМ-16 (посл. код)" "КАМ-4" "КАМ-64"];
 
 m = [4 4 4 4 2 6];
@@ -33,35 +33,38 @@ figure
 % figure('Name','Кривые помехоустойчивости 16-позиционных АМ, ФМ, КАМ', 'NumberTitle', 'off')
 subplot(2,2,1)
 hold on; grid on
-plot(E_b_over_N_0(1,:), 10 * log10(errors(1,:)), 'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10)
-plot(E_b_over_N_0(1,:), 10 * log10(P_b(1,:)),'LineStyle','--','Color',colors(1,:))
-plot(E_b_over_N_0(2,:), 10 * log10(errors(2,:)), 'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10)
-plot(E_b_over_N_0(2,:), 10 * log10(P_b(2,:)),'LineStyle','--','Color',colors(2,:))
-plot(E_b_over_N_0(3,:), 10 * log10(errors(3,:)), 'LineStyle','-','Color',colors(3,:),Marker='o', MarkerSize=5)
-plot(E_b_over_N_0(3,:), 10 * log10(P_b(3,:)),'LineStyle','--','Color',colors(3,:))
+plot(E_b_over_N_0(1,:), errors(1,:), 'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10)
+plot(E_b_over_N_0(1,:), P_b(1,:),'LineStyle','--','Color',colors(1,:))
+plot(E_b_over_N_0(2,:), errors(2,:), 'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10)
+plot(E_b_over_N_0(2,:), P_b(2,:),'LineStyle','--','Color',colors(2,:))
+plot(E_b_over_N_0(3,:), errors(3,:), 'LineStyle','-','Color',colors(3,:),Marker='o', MarkerSize=5)
+plot(E_b_over_N_0(3,:), P_b(3,:),'LineStyle','--','Color',colors(3,:))
 legend('АМ-16', '', 'ФМ-16','', 'КАМ-16','')
+yscale log;
 graphwrapper(x_axis_title, y_axis_title, 'Кривые помехоустойчивости 16-позиционных АМ, ФМ, КАМ')
 
 % figure('Name','Кривые помехоустойчивости КАМ-16 с разными кодировками', 'NumberTitle', 'off')
 subplot(2,2,2)
 hold on; grid on; 
-plot(E_b_over_N_0(3,:), 10 * log10(errors(3,:)),'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10);
-plot(E_b_over_N_0(3,:), 10 * log10(P_b(3,:)),'LineStyle','--','Color',colors(1,:));
-plot(E_b_over_N_0(4,:), 10 * log10(errors(4,:)),'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10);
-plot(E_b_over_N_0(4,:), 10 * log10(P_b(4,:)), 'LineStyle','--','Color',colors(2,:));
+plot(E_b_over_N_0(3,:), errors(3,:),'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10);
+plot(E_b_over_N_0(3,:), P_b(3,:),'LineStyle','--','Color',colors(1,:));
+plot(E_b_over_N_0(4,:), errors(4,:),'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10);
+plot(E_b_over_N_0(4,:), P_b(4,:), 'LineStyle','--','Color',colors(2,:));
 legend('Код грея', '', 'Посл. код','')
+yscale log;
 graphwrapper(x_axis_title, y_axis_title,'Кривые помехоустойчивости КАМ-16 с разными размещениями')
 
 % figure('Name','Кривые помехоустойчивости КАМ с разными числом позиций', 'NumberTitle', 'off')
 subplot(2,2,3)
 hold on; grid on
-plot(E_b_over_N_0(5,:), 10 * log10(errors(5,:)),'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10);
-plot(E_b_over_N_0(5,:), 10 * log10(P_b(5,:)),'LineStyle','--','Color',colors(1,:))
-plot(E_b_over_N_0(3,:), 10 * log10(errors(3,:)),'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10);
-plot(E_b_over_N_0(3,:), 10 * log10(P_b(3,:)),'LineStyle','--','Color',colors(2,:))
-plot(E_b_over_N_0(6,:), 10 * log10(errors(6,:)),'LineStyle','-','Color',colors(3,:),Marker='o', MarkerSize=5);
-plot(E_b_over_N_0(6,:), 10 * log10(P_b(6,:)),'LineStyle','--','Color',colors(3,:))
+plot(E_b_over_N_0(5,:), errors(5,:),'LineStyle','-','Color',colors(1,:),Marker='.', MarkerSize=10);
+plot(E_b_over_N_0(5,:), P_b(5,:),'LineStyle','--','Color',colors(1,:))
+plot(E_b_over_N_0(3,:), errors(3,:),'LineStyle','-','Color',colors(2,:),Marker='x', MarkerSize=10);
+plot(E_b_over_N_0(3,:), P_b(3,:),'LineStyle','--','Color',colors(2,:))
+plot(E_b_over_N_0(6,:), errors(6,:),'LineStyle','-','Color',colors(3,:),Marker='o', MarkerSize=5);
+plot(E_b_over_N_0(6,:), P_b(6,:),'LineStyle','--','Color',colors(3,:))
 legend('КАМ-4', '', 'КАМ-16', '', 'КАМ-64', '')
+yscale log;
 graphwrapper(x_axis_title, y_axis_title,'Кривые помехоустойчивости КАМ с разными числом позиций')
 
 function graphwrapper(x_axis_title, y_axis_title, plot_title)
@@ -69,4 +72,3 @@ function graphwrapper(x_axis_title, y_axis_title, plot_title)
     ylabel(y_axis_title);
     title(plot_title);
 end
-rcosine
