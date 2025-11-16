@@ -5,8 +5,8 @@ clc; clear all; close all;
 q_dB = {
     0:2:12, ... % 4.3.1 АБГШ-канал (AWGN) 
     0:5:30, ... % 4.3.2 Рэлеевский канал (RAYLEIGH)
-    0:2:20, ... % 4.3.4 Выбор наиболее сильной ветви(SC)
-    0:2:14  ... % 4.3.5 Оптимальное сложение ветвей(MRC)
+    0:2:20, ... % 4.3.4 Выбор наиболее сильной ветви (SC)
+    0:2:14  ... % 4.3.5 Оптимальное сложение ветвей (MRC)
 };
 
 SIMULINK_VER = '2022'; % {'2022', '2025'}
@@ -27,8 +27,8 @@ save_files = {
     "fm2_awgn_oneRay.mat", ... % 4.3.2 (RAYLEIGH)
     "fm2_awgn_twoRaysMax.mat", ... % 4.3.4 (SC)
     "fm2_awgn_twoRayMRC.mat", ... % 4.3.5 (MRC)
-    "time_data_hist1.mat", ... % 4.3.4 (SC)
-    "time_data_hist2.mat" % 4.3.4 (MRC)
+    "time_data_hist1.mat", ... % 4.3.4 (RAYLEIGH)
+    "time_data_hist2.mat" % 4.3.4 (SC)
 };
 
 for i = 1:length(save_files)
@@ -61,7 +61,7 @@ xlim([min(cell2mat(q_dB)) - 1, max(cell2mat(q_dB)) + 1])
 grid on
 legend(names{1}, '', names{2}, '', names{3}, '', names{4}, '')
 
-% п. 3
+% п. 3, 4
 for i = 5:6 
     load(save_files{i}(1))
     graphs.visual_model_graphs(time, data, hist, names{i - 3})
