@@ -20,21 +20,6 @@ else
     addpath("R2025b\");
 end
 
-save_files = {
-    ["fm2_awgn.mat","errors","snrs"], ... % 4.3.1 (AWGN)
-    ["fm2_awgn_oneRay.mat","errors","snrs"], ... % 4.3.2 (RAYLEIGH)
-    ["fm2_awgn_twoRaysMax.mat","errors","snrs","mean_power"], ... % 4.3.4 (SC)
-    ["fm2_awgn_twoRayMRC.mat","errors","snrs"], ... % 4.3.5 (MRC)
-    ["scope_1ray.fig", "hist_1ray.fig"], ... % 4.3.4
-    ["scope_2ray.fig", "hist_2ray.fig"] % 4.3.4
-};
-
-for i = 1:length(save_files)
-    for j = 1:length(save_files{i})
-        save_files{i}(j) = strcat("results\", save_files{i}(j));
-    end
-end
-
 %% Чистка
 if exist("results\", 'dir')
     rmdir("results\")
@@ -55,35 +40,28 @@ for i = 1:4
             disp(errors)
         end
     end
-    figure("Name", names{i})
-    scatter(snrs, errors, Marker="+");
-    yscale(gca(), "log")
-    xlabel("Eb/No"); ylabel("P_{ош}")
-    xlim([q_dB{i}(1) - 1, q_dB{i}(end) + 1])
-    grid on
-    for k = 1:length(save_files{i})
-        save(save_files{i}(k))
+    if (i~=3)
+        save(save_files{i}, 'snrs', 'errors')
+    else
+        save(save_files{i}, 'snrs', 'errors', 'mean_power')
     end
-    % clear all;
     disp(strcat("Выполнено"))
+    % graphs.model_graphs(snrs, errors, names{i})
 end
 
 %% Моделирование 4.3.3
 for i = 5:6
     model = Simulink.SimulationInput(model_names{i});
     out=sim(model.setVariable("EbPerNo",20));
-    figure('Name',strcat("Сигнал, метод '",names{i - 2}, "'"))
-    plot(out.Scope{1}.Values.Time, squeeze(out.Scope{1}.Values.Data))
-    grid on
-    xlabel('t, с'), ylabel('|x|')
-    savefig(save_files{i}(1))
-    figure('Name',strcat("Гистограмма, метод '",names{i - 2}, "'"))
-    bar(0:.1:4.999,out.Hist,1)
-    grid on
-    xlabel('|x|^2'); ylabel('P(|x|^2)')
-    savefig(save_files{i}(2))
-    if (i == 6)
+    time = out.Scope{1}.Values.Time;
+    data = squeeze(out.Scope{1}.Values.Data);
+    hist = out.Hist;
+    if (i~=6)
+        save(save_files{i}, "time", "data", "hist")
+    else
         mean_power=out.MeanPower;
+        save(save_files{i}, "time", "data", "hist", "mean_power")
     end
     disp(strcat("Моделирование Simulink-модели '", names{i - 2}, " - наблюдение' выполнено"))
+    % graphs.visual_model_graphs(timeData(:,1), timeData(:,2), hist, names{i - 2})
 end
