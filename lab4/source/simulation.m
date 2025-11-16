@@ -22,11 +22,11 @@ end
 
 %% Чистка
 if exist("results\", 'dir')
-    rmdir("results\")
+    rmdir("results\","s")
 end
 mkdir("results")
-%% Моделирование 4.3.1, 4.3.2, 4.3.4, 4.3.5
-for i = 1:4
+%% Моделирование 4.3.1 (1), 4.3.2 (2), 4.3.4 (3), 4.3.5 (4)
+for i = 1
     disp(strcat("Моделирование Simulink-модели '", names{i}, "'..."))
     snrs=q_dB{i};
     model = Simulink.SimulationInput(model_names{i});
@@ -37,13 +37,13 @@ for i = 1:4
         errors(j)= out.Errors(1);
         if (out.Errors(2) < 100)
             disp("Warning: errors count less then 100")
-            disp(errors)
         end
+        disp(errors)
     end
     if (i~=3)
         save(save_files{i}, 'snrs', 'errors')
     else
-        save(save_files{i}, 'snrs', 'errors', 'mean_power')
+        save(save_files{i}, 'snrs', 'errors')
     end
     disp(strcat("Выполнено"))
     % graphs.model_graphs(snrs, errors, names{i})
