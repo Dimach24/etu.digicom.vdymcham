@@ -49,8 +49,13 @@ for i = 5:6
     disp(strcat("Моделирование Simulink-модели '", names{i - 3}, " - наблюдение'"))
     model = Simulink.SimulationInput(model_names{i});
     out=sim(model.setVariable("EbPerNo",20));
-    time = out.Scope.time;
-    data = squeeze(out.Scope.signals.values);
+    if (strcmp(SIMULINK_VER, '2022'))
+        time = out.Scope{1}.Values.Time;
+        data = squeeze(out.Scope{1}.Values.Data);
+    else
+        time = out.Scope.time;
+        data = squeeze(out.Scope.signals.values);
+    end
     hist = out.Hist;
     mean_power=out.MeanPower;
     save(save_files{i}, "time", "data", "hist", "mean_power")
